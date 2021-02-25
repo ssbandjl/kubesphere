@@ -15,6 +15,9 @@ package v1
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/emicklei/go-restful"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -27,8 +30,6 @@ import (
 	"kubesphere.io/kubesphere/pkg/server/errors"
 	"kubesphere.io/kubesphere/pkg/server/params"
 	op "kubesphere.io/kubesphere/pkg/simple/client/openpitrix"
-	"strconv"
-	"strings"
 )
 
 type openpitrixHandler struct {
@@ -392,6 +393,7 @@ func (h *openpitrixHandler) ListAppVersions(req *restful.Request, resp *restful.
 	resp.WriteEntity(result)
 }
 
+// 应用商店-列出所有APP模板
 func (h *openpitrixHandler) ListApps(req *restful.Request, resp *restful.Response) {
 	limit, offset := params.ParsePaging(req)
 	orderBy := params.GetStringValueWithDefault(req, params.OrderByParam, openpitrix.CreateTime)
@@ -413,6 +415,7 @@ func (h *openpitrixHandler) ListApps(req *restful.Request, resp *restful.Respons
 		conditions.Match[openpitrix.ISV] = req.QueryParameter("workspace")
 	}
 
+	//列出所有APP, 这里用的是接口
 	result, err := h.openpitrix.ListApps(conditions, orderBy, reverse, limit, offset)
 
 	if err != nil {

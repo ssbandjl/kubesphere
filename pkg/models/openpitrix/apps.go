@@ -14,6 +14,8 @@ limitations under the License.
 package openpitrix
 
 import (
+	"strings"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"google.golang.org/grpc/codes"
@@ -23,7 +25,6 @@ import (
 	"kubesphere.io/kubesphere/pkg/server/params"
 	"kubesphere.io/kubesphere/pkg/simple/client/openpitrix"
 	"openpitrix.io/openpitrix/pkg/pb"
-	"strings"
 )
 
 type AppTemplateInterface interface {
@@ -56,6 +57,7 @@ func newAppTemplateOperator(opClient openpitrix.Client) AppTemplateInterface {
 	}
 }
 
+// 列出所有APP模板
 func (c *appTemplateOperator) ListApps(conditions *params.Conditions, orderBy string, reverse bool, limit, offset int) (*models.PageableResponse, error) {
 
 	describeAppsRequest := &pb.DescribeAppsRequest{}
@@ -88,6 +90,7 @@ func (c *appTemplateOperator) ListApps(conditions *params.Conditions, orderBy st
 	describeAppsRequest.Reverse = &wrappers.BoolValue{Value: reverse}
 	describeAppsRequest.Limit = uint32(limit)
 	describeAppsRequest.Offset = uint32(offset)
+	//通过gRPC获取APP列表
 	resp, err := c.opClient.DescribeApps(openpitrix.SystemContext(), describeAppsRequest)
 	if err != nil {
 		klog.Error(err)

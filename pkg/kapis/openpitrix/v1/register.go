@@ -14,8 +14,10 @@ limitations under the License.
 package v1
 
 import (
+	"net/http"
+
 	"github.com/emicklei/go-restful"
-	"github.com/emicklei/go-restful-openapi"
+	restfulspec "github.com/emicklei/go-restful-openapi"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"kubesphere.io/kubesphere/pkg/api"
 	"kubesphere.io/kubesphere/pkg/apiserver/runtime"
@@ -26,7 +28,6 @@ import (
 	"kubesphere.io/kubesphere/pkg/server/errors"
 	"kubesphere.io/kubesphere/pkg/server/params"
 	op "kubesphere.io/kubesphere/pkg/simple/client/openpitrix"
-	"net/http"
 )
 
 const (
@@ -157,6 +158,8 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Param(webservice.PathParameter("namespace", "the name of the project").Required(true)).
 		Param(webservice.PathParameter("application", "the id of the application").Required(true)))
 
+	// get app version
+	// https://demo.kubesphere.io/kapis/openpitrix.io/v1/apps/app-WELMmy0K5ZB8/versions?orderBy=sequence&paging=limit%3D10%2Cpage%3D1&conditions=status%3Dactive&reverse=true
 	webservice.Route(webservice.POST("/apps/{app}/versions").
 		To(handler.CreateAppVersion).
 		Doc("Create a new app template version").
@@ -309,6 +312,7 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Param(webservice.PathParameter("app", "app template id")).
 		Metadata(restfulspec.KeyOpenAPITags, []string{constants.OpenpitrixManagementTag}).
 		Returns(http.StatusOK, api.StatusOK, openpitrix2.AppVersionAudit{}))
+
 	webservice.Route(webservice.POST("/apps").
 		To(handler.CreateApp).
 		Doc("Create a new app template").
@@ -316,6 +320,7 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Returns(http.StatusOK, api.StatusOK, openpitrix2.CreateAppResponse{}).
 		Reads(openpitrix2.CreateAppRequest{}).
 		Param(webservice.PathParameter("app", "app template id")))
+
 	webservice.Route(webservice.POST("/workspaces/{workspace}/apps").
 		To(handler.CreateApp).
 		Doc("Create a new app template").
@@ -377,6 +382,9 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Returns(http.StatusOK, api.StatusOK, errors.Error{}).
 		Param(webservice.PathParameter("version", "app template version id")).
 		Param(webservice.PathParameter("app", "app template id")))
+
+	// 应用商店-列出所有APP模板
+	// https://demo.kubesphere.io/kapis/openpitrix.io/v1/apps?orderBy=create_time&paging=limit%3D12%2Cpage%3D1&conditions=status%3Dactive%2Crepo_id%3Drepo-helm&reverse=true
 	webservice.Route(webservice.GET("/apps").
 		To(handler.ListApps).
 		Doc("List app templates").
@@ -391,6 +399,7 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Param(webservice.QueryParameter(params.OrderByParam, "sort parameters, e.g. orderBy=createTime")).
 		Metadata(restfulspec.KeyOpenAPITags, []string{constants.OpenpitrixAppTemplateTag}).
 		Returns(http.StatusOK, api.StatusOK, models.PageableResponse{}))
+
 	webservice.Route(webservice.GET("/workspaces/{workspace}/apps").
 		To(handler.ListApps).
 		Doc("List app templates in the specified workspace.").
