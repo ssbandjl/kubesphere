@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# This script builds and link stamps the output
+# This script builds and link stamps the output   
+# hack/gobuild.sh cmd/ks-apiserver
 
 set -o errexit
 set -o nounset
@@ -46,3 +47,6 @@ time GOOS=${BUILD_GOOS} CGO_ENABLED=0 GOARCH=${BUILD_GOARCH} ${GOBINARY} build \
         -ldflags="${LDFLAGS}" \
         -o ${OUT} \
         ${BUILDPATH}
+
+
+#+ go build '-ldflags=-X '\''kubesphere.io/kubesphere/pkg/version.buildDate=2021-02-25T13:34:16Z'\'' -X '\''kubesphere.io/kubesphere/pkg/version.gitCommit=f0c577419a6e5408c2c63a77134a2bec3fce2f0f'\'' -X '\''kubesphere.io/kubesphere/pkg/version.gitTreeState=dirty'\'' -X '\''kubesphere.io/kubesphere/pkg/version.gitVersion=v3.0.0-303+f0c577419a6e54-dirty'\'' -X '\''kubesphere.io/kubesphere/pkg/version.gitMajor=3'\'' -X '\''kubesphere.io/kubesphere/pkg/version.gitMinor=0+'\''' -o bin/cmd/ks-apiserver ./cmd/ks-apiserver

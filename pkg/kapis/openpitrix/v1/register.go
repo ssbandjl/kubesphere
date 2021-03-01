@@ -168,6 +168,7 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Param(webservice.QueryParameter("validate", "Validate format of package(pack by op tool)")).
 		Returns(http.StatusOK, api.StatusOK, openpitrix2.CreateAppVersionResponse{}).
 		Param(webservice.PathParameter("app", "app template id")))
+	// 获取app文件
 	webservice.Route(webservice.POST("/workspaces/{workspace}/apps/{app}/versions").
 		To(handler.CreateAppVersion).
 		Doc("Create a new app template version").
@@ -230,6 +231,8 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Param(webservice.QueryParameter(params.OrderByParam, "sort parameters, e.g. orderBy=createTime")).
 		Metadata(restfulspec.KeyOpenAPITags, []string{constants.OpenpitrixAppTemplateTag}).
 		Returns(http.StatusOK, api.StatusOK, models.PageableResponse{}))
+
+	// 获取APP详情
 	webservice.Route(webservice.GET("/workspaces/{workspace}/apps/{app}/versions/{version}").
 		To(handler.DescribeAppVersion).
 		Doc("Describe the specified app template version").
@@ -287,6 +290,8 @@ func AddToContainer(c *restful.Container, factory informers.InformerFactory, op 
 		Returns(http.StatusOK, api.StatusOK, errors.Error{}).
 		Param(webservice.PathParameter("version", "app template version id")).
 		Param(webservice.PathParameter("app", "app template id")))
+
+	// 获取App的chart文件
 	webservice.Route(webservice.GET("/apps/{app}/versions/{version}/files").
 		To(handler.GetAppVersionFiles).
 		Doc("Get app template package files").

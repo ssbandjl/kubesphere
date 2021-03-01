@@ -2,7 +2,7 @@
 # Use of this source code is governed by a Apache license
 # that can be found in the LICENSE file.
 
-# Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
+# Produce CRDs that work back to Kubernetes 1.11 (no version conversion)	if not set value then set this value
 CRD_OPTIONS ?= "crd:trivialVersions=true"
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
@@ -13,7 +13,9 @@ GOBIN=$(shell go env GOBIN)
 endif
 
 OUTPUT_DIR=bin
+#set flag let go mod use vendor dir
 GOFLAGS=-mod=vendor
+#define var, can use more line
 define ALL_HELP_INFO
 # Build code.
 #
@@ -33,6 +35,8 @@ define ALL_HELP_INFO
 #           Using these build options allows you to subsequently use source
 #           debugging tools like delve.
 endef
+# http://blog.sina.com.cn/s/blog_5f1761850100p37b.html
+# all is phony
 .PHONY: all
 all: test ks-apiserver ks-controller-manager
 
@@ -48,11 +52,11 @@ ks-controller-manager: fmt vet
 e2e: fmt vet
 	hack/build_e2e.sh test/e2e
 
-# Run go fmt against code 
+# Run go fmt against code formart code
 fmt:
 	gofmt -w ./pkg ./cmd ./tools ./api
 
-# Run go vet against code
+# Run go vet against code  Vet examines Go source code and reports suspicious constructs
 vet:
 	go vet ./pkg/... ./cmd/...
 

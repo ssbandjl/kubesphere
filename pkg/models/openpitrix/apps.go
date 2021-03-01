@@ -482,24 +482,27 @@ func (c *appTemplateOperator) DoAppVersionAction(versionId string, request *Acti
 	return nil
 }
 
+// 根据版本和App获取chart文件
 func (c *appTemplateOperator) GetAppVersionFiles(versionId string, request *GetAppVersionFilesRequest) (*GetAppVersionPackageFilesResponse, error) {
+	// gRPC客户端, 构造请求
 	getAppVersionPackageFilesRequest := &pb.GetAppVersionPackageFilesRequest{
 		VersionId: &wrappers.StringValue{Value: versionId},
 	}
 	if request.Files != nil {
 		getAppVersionPackageFilesRequest.Files = request.Files
 	}
-
+	// gRPC客户端
 	resp, err := c.opClient.GetAppVersionPackageFiles(openpitrix.SystemContext(), getAppVersionPackageFilesRequest)
 	if err != nil {
 		klog.Error(err)
 		return nil, err
 	}
-
+	// 构造返回对象
 	version := &GetAppVersionPackageFilesResponse{
 		VersionId: versionId,
 	}
 
+	//装载文件
 	if resp.Files != nil {
 		version.Files = make(map[string]strfmt.Base64)
 		for k, v := range resp.Files {

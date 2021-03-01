@@ -282,14 +282,15 @@ func (h *openpitrixHandler) DoAppVersionAction(req *restful.Request, resp *restf
 	resp.WriteEntity(errors.None)
 }
 
+// 获取App的Chart文件
 func (h *openpitrixHandler) GetAppVersionFiles(req *restful.Request, resp *restful.Response) {
 	versionId := req.PathParameter("version")
-	getAppVersionFilesRequest := &openpitrix.GetAppVersionFilesRequest{}
-	if f := req.QueryParameter("files"); f != "" {
+	getAppVersionFilesRequest := &openpitrix.GetAppVersionFilesRequest{} //构造请求
+	if f := req.QueryParameter("files"); f != "" {                       //如果请求参数中有多个文件名, 则添加到请求中
 		getAppVersionFilesRequest.Files = strings.Split(f, ",")
 	}
 
-	result, err := h.openpitrix.GetAppVersionFiles(versionId, getAppVersionFilesRequest)
+	result, err := h.openpitrix.GetAppVersionFiles(versionId, getAppVersionFilesRequest) //获取文件
 
 	if err != nil {
 		klog.Errorln(err)
